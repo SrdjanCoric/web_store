@@ -8,6 +8,7 @@ gem 'rack', '1.6.13'
 gem 'grape'
 gem 'sinatra'
 gem 'erubi'
+gem 'puma'
 
 gem 'activerecord', require: 'active_record'
 gem 'hashie-forbidden_attributes'
