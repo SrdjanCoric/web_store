@@ -40,7 +40,14 @@ module WebStore
       requires :id, type: Integer, desc: 'Product ID'
     end
     get '/products/:id' do
-      Product.find params[:id]
+      begin
+        Product.find(params[:id])
+      rescue ActiveRecord::RecordNotFound
+        error!({
+          status_code: 404,
+          message: "Couldn't find WebStore::Product with 'id'=#{params[:id]}"
+        }, 404, { 'Content-Type' => 'application/json' })
+      end
     end
 
     group do
