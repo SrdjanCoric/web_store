@@ -1,6 +1,5 @@
 require_relative './env'
 
-# https://stackoverflow.com/a/43873756/617243
 class ConnectionManagement
   def initialize(app)
     @app = app
@@ -20,19 +19,34 @@ class ConnectionManagement
   end
 end
 
-use ConnectionManagement
-
-use Rack::Static,
-  :urls => ["/css", "/images", "/lib", "/swagger-ui.js"],
-  :root => "public/swagger-ui",
-  :index => 'index.html'
-
-  require 'rack/cors'
-  use Rack::Cors do
-    allow do
-      origins '*'
-      resource '*', headers: :any, methods: [:get, :post, :patch, :put, :options]
-    end
+# Create a router that bypasses static for API calls
+class Router
+  def initialize(api_app, web_app)
+    @api = api_app
+    @web = Rack::Static.new(web_app, {
+      :urls => ["/css", "/images", "/lib", "/swagger-ui.js"],
+      :root => "public/swagger-ui",
+      :index => 'index.html'
+    })
   end
 
-  run Rack::Cascade.new [WebStore::API, WebStore::Web]
+  def call(env)
+    if env['PATH_INFO'].start_with?('/v1')
+      @api.call(env)
+    else
+      @web.call(env)
+    end
+  end
+end
+
+use ConnectionManagement
+require 'rack/cors'
+use Rack::Cors do
+  allow do
+    origins '*'
+    resource '*', headers: :any, methods: [:get, :post, :patch, :put, :options]
+  end
+end
+
+# Use our router instead of Cascade
+run Router.new(WebStore::API, WebStore::Web)
