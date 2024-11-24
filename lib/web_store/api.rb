@@ -17,10 +17,9 @@ module WebStore
     end
 
     rescue_from ActiveRecord::RecordNotFound do |e|
-      error!({
-        status_code: 404,
-        message: "Couldn't find WebStore::Product with 'id'=#{params[:id]}"
-      }, 404)
+      puts "hahahahah"
+      message = e.message.gsub(/\s*\[.*\Z/, '')
+      rack_response({ status_code: 404, message: message }.to_json, 404)
     end
 
     before do
