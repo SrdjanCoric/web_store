@@ -17,13 +17,17 @@ module WebStore
     end
 
     rescue_from ActiveRecord::RecordNotFound do |e|
-
       id = e.message.match(/id=(\d+)/)[1] rescue 'unknown'
-      puts("we got here #{id}")
-      rack_response({
+      puts("Grape error handler - About to send response")
+      response = {
         status_code: 404,
         message: "Couldn't find WebStore::Product with 'id'=#{id}"
-    }.to_json, 404)
+      }.to_json
+      puts("Grape error handler - Response body: #{response}")
+      rack_response(response, 404, {
+        'Content-Type' => 'application/json',
+        'X-Error-Handler' => 'grape-activerecord'
+      })
     end
 
     before do
