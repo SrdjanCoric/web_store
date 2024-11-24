@@ -17,7 +17,9 @@ module WebStore
     end
 
     rescue_from ActiveRecord::RecordNotFound do |e|
+
       id = e.message.match(/id=(\d+)/)[1] rescue 'unknown'
+      puts("we got here #{id}")
       rack_response({
         status_code: 404,
         message: "Couldn't find WebStore::Product with 'id'=#{id}"
