@@ -28,6 +28,10 @@ module WebStore
         'Content-Type' => 'application/json',
         'X-Error-Handler' => 'grape-activerecord'
       })
+      rack_response(response, 404, {
+        'Content-Type' => 'application/json',
+        'X-Cascade' => 'stop'  # Add this to prevent cascade
+      })
     end
 
     before do
