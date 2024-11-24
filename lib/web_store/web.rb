@@ -7,7 +7,6 @@ module WebStore
     set :method_override, true
 
     error ActiveRecord::RecordNotFound do |e|
-      puts("we also got here")
       status 404
       e.message.gsub(/\s*\[.*\Z/, '')
     end

@@ -7,8 +7,6 @@ class ConnectionManagement
   def call(env)
     testing = env['rack.test']
     status, headers, body = @app.call(env)
-    puts "ConnectionManagement middleware - Status: #{status}"
-    puts "ConnectionManagement middleware - Headers: #{headers}"
     proxy = ::Rack::BodyProxy.new(body) do
       ActiveRecord::Base.clear_active_connections! unless testing
     end
