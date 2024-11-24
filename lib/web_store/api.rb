@@ -18,7 +18,7 @@ module WebStore
 
     rescue_from ActiveRecord::RecordNotFound do |e|
       message = e.message.gsub(/\s*\[.*\Z/, '')
-      rack_response({ status_code: 404, message: message }.to_json, 404)
+      error!({ status_code: 404, message: message }, 404, { 'Content-Type' => 'application/json' })
     end
 
     before do
