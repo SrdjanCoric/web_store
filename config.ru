@@ -35,8 +35,4 @@ use Rack::Static,
     end
   end
 
-  map "/v1" do
-    run WebStore::API
-  end
-
-  run WebStore::Web
+  run Rack::Cascade.new [WebStore::API, WebStore::Web]
