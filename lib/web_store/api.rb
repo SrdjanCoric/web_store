@@ -17,9 +17,10 @@ module WebStore
     end
 
     rescue_from ActiveRecord::RecordNotFound do |e|
+      id = e.message.match(/id=(\d+)/)[1] rescue 'unknown'
       error!({
         status_code: 404,
-        message: "Couldn't find WebStore::Product with 'id'=#{params[:id]}"
+        message: "Couldn't find WebStore::Product with 'id'=#{id}"
       }, 404)
     end
 
