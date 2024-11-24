@@ -34,5 +34,9 @@ use Rack::Static,
       resource '*', headers: :any, methods: [:get, :post, :patch, :put, :options]
     end
   end
-  
-  run Rack::Cascade.new [WebStore::API, WebStore::Web]
+
+  map "/v1" do
+    run WebStore::API
+  end
+
+  run WebStore::Web
